@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nivo</title>
+<meta name="theme-color" content="#0B0C0C">
+<meta name="description" content="Nivo · A Cortex interface">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-180.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap">
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(ellipse at 50% 35%,#24320F 0%,#0F150E 45%,#0B0C0C 80%);color:#ECF1EC;font-family:Outfit,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px max(16px,env(safe-area-inset-left)) 24px max(16px,env(safe-area-inset-right));text-align:center}
+img{width:132px;height:132px;border-radius:30px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+h1{margin:6px 0 0;font-size:44px;font-weight:700;letter-spacing:-.03em}
+p{margin:0;color:#9AA69F;font-size:16px;max-width:340px;line-height:1.45}
+a,button{font:inherit;font-size:17px;font-weight:600;border:0;border-radius:16px;padding:15px 26px;cursor:pointer;text-decoration:none}
+.go{background:linear-gradient(180deg,#E6F06A,#A9D843);color:#0B0C0C}
+.ins{background:#1C1F1F;color:#ECF1EC;border:1px solid #2A302E}
+.row{display:flex;flex-direction:column;gap:10px;width:min(320px,100%)}
+.hint{font-size:14px;color:#6E7873}
+.launch .ui{display:none}.spin{display:none;width:28px;height:28px;border-radius:50%;border:3px solid #2A302E;border-top-color:#C9E45A;animation:s 0.8s linear infinite}
+.launch .spin{display:block}@keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<img src="icons/icon-512.png" alt="Nivo">
+<div class="spin" aria-hidden="true"></div>
+<div class="ui" style="display:contents">
+<h1>nivo</h1>
+<p>A Cortex interface</p>
+<div class="row">
+<button class="ins" id="ins" hidden>Instalează Nivo pe telefon</button>
+<a class="go" id="go" href="#">Deschide Nivo</a>
+</div>
+<p class="hint" id="hint">Pe Android: în Chrome apasă ⋮ și apoi „Instalează aplicația”. Pe iPhone: Share, apoi „Adaugă pe ecranul principal”.</p>
+</div>
+<script>
+const TARGET="https://claude.ai/artifact/JyaCp6DiRFVDjXDnQA25SW";
+document.getElementById("go").href=TARGET;
+const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+if(standalone){document.body.classList.add("launch");document.querySelector(".ui").style.display="none";setTimeout(()=>location.replace(TARGET),350)}
+let dp=null;const ins=document.getElementById("ins");
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e;ins.hidden=false});
+ins.addEventListener("click",async()=>{if(!dp)return;dp.prompt();const r=await dp.userChoice;if(r.outcome==="accepted"){ins.hidden=true;document.getElementById("hint").textContent="Gata. Nivo e acum în lista de aplicații."}dp=null});
+addEventListener("appinstalled",()=>{ins.hidden=true});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
